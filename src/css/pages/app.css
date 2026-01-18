@@ -1,0 +1,136 @@
+@keyframes embed-loader-spin { to { transform: rotate(.5turn) } }
+
+@layer pages {
+	#app {
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		
+		.config {
+			display: grid;
+			grid-template-columns: 30ch 30ch;
+			grid-auto-flow: rows;
+			padding: 20px;
+			background: oklch(90% 0.005 30);
+			color: black;
+			
+			input[type="text"],
+			input[type="number"] {
+				appearance: none;
+				padding: 6px 10px;
+				border-radius: 2px;
+				border: none;
+				background: oklch(100% 0 0);
+				font-size: 1rem;
+			}
+			
+			.field {
+				width: fit-content;
+				padding: 4px 10px;
+				
+				.label {
+					font-weight: 600;
+				}
+				
+				input {
+					max-width: none;
+					min-width: none;
+					margin-left: 10px;
+					font-weight: 400;
+					text-align: left;
+				}
+				
+				&.field-text {
+					grid-column: span 2;
+					input { width: 48ch }
+				}
+				&.field-font-family {
+					input { width: 10ch }
+					
+					&.is-none input {
+						
+					}
+					&.is-loading {
+						position: relative;
+						&::after {
+							position: absolute;
+							top: calc(50% - 15px);
+							right: -40px;
+							content: '';
+							display: inline-block;
+							width: 30px;
+							aspect-ratio: 1;
+							--_c: no-repeat radial-gradient(farthest-side,#25b09b 92%,#0000);
+							background: 
+								var(--_c) top,
+								var(--_c) left,
+								var(--_c) right,
+								var(--_c) bottom;
+							background-size: 8px 8px;
+							animation: embed-loader-spin 1s infinite;
+						}
+					}
+					&.is-loaded input {
+						box-shadow: 8px 0 oklch(50% 0.5 120);
+					}
+					&.is-error input {
+						box-shadow: 8px 0 oklch(50% 0.5 0);
+					}
+				}
+				&.field-font-size {
+					input {}
+				}
+				&.field-font-weight {
+					input {}
+				}
+				&.field-color {
+					input {}
+				}
+			}
+		}
+		
+		.texture {
+			max-width: calc(200% - 80px);
+			border: 1px solid oklch(60% 0 90 / 20%);
+			margin: 20px;
+		}
+		
+		.stats {
+			padding: 0 20px 20px 20px;
+			font-size: 0.9rem;
+			color: oklch(70% 0.01 30);
+		}
+	}
+	
+	.page-landing {
+		display: grid;
+		align-content: center;
+		justify-content: center;
+		text-align: center;
+		padding: 0 20px;
+		
+		> * + * {
+			margin-top: 20px
+		}
+		
+		.title {
+			font-size: 3rem;
+			font-weight: 600;
+		}
+		
+		.link {
+			color: oklch(70% 0.2 90);
+			
+			.favicon {
+				display: inline-block;
+				width: 1em;
+				height: 1em;
+				margin-right: 0.3em;
+				vertical-align: -12.5%;
+			}
+		}
+		
+		p {
+			max-width: 60ch;
+		}
+	}
+}
