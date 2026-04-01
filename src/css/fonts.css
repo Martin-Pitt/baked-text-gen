@@ -1,0 +1,38 @@
+@layer skeleton {
+	@font-face {
+		font-family: 'Dragon Script';
+		src: url('./fonts/DragonScript.woff');
+	}
+	
+	@font-face {
+		font-family: 'Dwemer';
+		src: url('./fonts/DwemerSR.woff');
+	}
+	
+	@font-face {
+		font-family: 'Falmer';
+		src: url('./fonts/Falmer.woff');
+	}
+	
+	@font-face {
+		font-family: 'Oblivion';
+		src: url('./fonts/Oblivion.ttf');
+	}
+	
+	@font-face {
+		font-family: 'Oblivion Worn';
+		src: url('./fonts/Oblivion Worn.ttf');
+	}
+	
+	@font-face {
+		font-family: 'Kingthings Petrock';
+		src: url('./fonts/Kingthings-Petrock.ttf');
+	}
+	
+	@font-face {
+		font-family: 'Kingthings Petrock';
+		font-weight: 200;
+		src: url('./fonts/Kingthings-Petrock-Light.ttf');
+	}
+	
+}

@@ -1,9 +1,13 @@
 @keyframes embed-loader-spin { to { transform: rotate(.5turn) } }
+@keyframes pattern-move {
+	0% { background-position: 0px 0px; }
+	100% { background-position: 30px 30px; }
+}
 
 @layer pages {
 	#app {
 		display: grid;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto auto auto auto 1fr;
 		
 		.config {
 			display: grid;
@@ -23,7 +27,30 @@
 				font-size: 1rem;
 			}
 			
+			textarea {
+				width: 70ch;
+				appearance: none;
+				padding: 6px 10px;
+				border-radius: 2px;
+				border: none;
+				background: oklch(100% 0 0);
+				font-size: 1rem;
+			}
+			
+			fieldset {
+				border: none;
+				/* border: 2px solid oklch(60% 0 90 / 20%); */
+				padding: 0px;
+				margin: 10px;
+				
+				legend {
+					padding: 0 10px;
+					font-weight: 600;
+				}
+			}
+			
 			.field {
+				display: block;
 				width: fit-content;
 				padding: 4px 10px;
 				
@@ -44,7 +71,7 @@
 					input { width: 48ch }
 				}
 				&.field-font-family {
-					input { width: 10ch }
+					input { width: 20ch }
 					
 					&.is-none input {
 						
@@ -91,13 +118,42 @@
 		.texture {
 			max-width: calc(200% - 80px);
 			border: 1px solid oklch(60% 0 90 / 20%);
-			margin: 20px;
+			margin: 20px 20px 4px 20px;
+			
+			background: repeating-conic-gradient(oklch(0% 0 0 / 0.08) 0% 25%, oklch(100% 0 0 / 0.08) 0% 50%) 0px 0px / 30px 30px;
+			box-shadow: 0px 2px 4px lch(0 0 0 / 40%);
+			
+			&:hover {
+				background: repeating-conic-gradient(oklch(0% 0 0 / 0.08) 0% 25%, oklch(100% 0 0 / 0.08) 0% 50%) 0px 0px / 30px 30px;
+				animation: pattern-move 3s linear infinite;
+			}
 		}
 		
 		.stats {
-			padding: 0 20px 20px 20px;
+			margin: 0 20px 20px 20px;
 			font-size: 0.9rem;
 			color: oklch(70% 0.01 30);
+		}
+		
+		.download {
+			margin: 0 20px 20px 20px;
+			color: inherit;
+			text-decoration: none;
+			
+			span {
+				color: oklch(70% 0.1 20);
+				text-decoration: underline;
+			}
+			
+			&:hover {
+				color: oklch(80% 0.2 60);
+				text-decoration: none;
+				
+				span {
+					color: oklch(80% 0.2 60);
+					text-decoration: underline;
+				}
+			}
 		}
 	}
 	
