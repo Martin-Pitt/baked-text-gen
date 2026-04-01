@@ -17,6 +17,11 @@ const textureMarquee = temporarySignal('textureMarquee', false);
 const textureFixedWidth = temporarySignal('textureFixedWidth', false);
 const textureFixedHeight = temporarySignal('textureFixedHeight', false);
 const textureStableBaseline = temporarySignal('textureStableBaseline', false);
+const outline = temporarySignal('outline', false);
+const outlineColor = temporarySignal('outlineColor', '#000000');
+const outlineWidth = temporarySignal('outlineWidth', 8);
+const outlineMiter = temporarySignal('outlineMiter', false);
+const letterSpacing = temporarySignal('letterSpacing', 0);
 
 
 function debounce(fn, delay) {
@@ -37,6 +42,8 @@ export function App() {
 		const ctx = canvasRef.current.getContext('2d');
 		const font = `${fontWeight.value} ${fontSize.value}px ${fontFamily.value}, sans-serif`;
 		ctx.font = font;
+		ctx.canvas.style.letterSpacing = `${letterSpacing.value}px`;
+		
 		await document.fonts.load(ctx.font);
 		if(fontEmbedState.value !== 'loaded') fontEmbedState.value = 'loaded';
 		
@@ -55,7 +62,8 @@ export function App() {
 		// ctx.font = font;
 		let lineGap = fontSize.value * 0.2;
 		let lineHeight = fontSize.value * 1.2;
-		let offset;
+		let horizontal = 0;
+		let vertical = 0;
 		
 		if(textureStableBaseline.value)
 		{
@@ -65,7 +73,7 @@ export function App() {
 				Math.ceil(lineHeight * lines.length):
 				Math.ceil(measure.fontBoundingBoxAscent + measure.fontBoundingBoxDescent);
 			
-			offset = measure.fontBoundingBoxAscent;
+			vertical = measure.fontBoundingBoxAscent;
 		}
 		
 		else
@@ -77,13 +85,21 @@ export function App() {
 				Math.ceil(lineHeight * lines.length):
 				Math.ceil(measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent);
 			
-			offset = measure.actualBoundingBoxAscent;
+			vertical = measure.actualBoundingBoxAscent;
+		}
+		
+		if(outline.value)
+		{
+			ctx.canvas.width += outlineWidth.value;
+			ctx.canvas.height += outlineWidth.value;
+			horizontal += outlineWidth.value / 2;
+			vertical += outlineWidth.value / 2;
 		}
 		
 		if(textureFixedHeight.value)
 		{
 			let height = Math.pow(2, Math.ceil(Math.log2(ctx.canvas.height)))
-			offset += (height - ctx.canvas.height) / 2; // center text
+			vertical += (height - ctx.canvas.height) / 2; // center text
 			ctx.canvas.height = height;
 		}
 		if(textureFixedWidth.value) ctx.canvas.width = Math.pow(2, Math.ceil(Math.log2(ctx.canvas.width)));
@@ -91,12 +107,16 @@ export function App() {
 		ctx.canvas.style.aspectRatio = `${ctx.canvas.width} / ${ctx.canvas.height}`;
 		textureStats.value = { width: ctx.canvas.width, height: ctx.canvas.height };
 		
+		ctx.strokeStyle = outlineColor.value;
+		ctx.lineWidth = outlineWidth.value || fontSize.value * 0.1;
+		if(outlineMiter.value) ctx.miterLimit = 2.0;
 		ctx.fillStyle = color.value;
 		ctx.font = font;
 		for(let line of lines)
 		{
-			ctx.fillText(line, 0, offset);
-			offset += lineHeight;
+			if(outline.value) ctx.strokeText(line, horizontal, vertical);
+			ctx.fillText(line, horizontal, vertical);
+			vertical += lineHeight;
 		}
 		
 		canvasRef.current.toBlob(blob => {
@@ -125,6 +145,11 @@ export function App() {
 		textureFixedHeight.value,
 		textureFixedWidth.value,
 		textureStableBaseline.value,
+		outline.value,
+		outlineColor.value,
+		outlineWidth.value,
+		outlineMiter.value,
+		letterSpacing.value,
 	]);
 	
 	return (
@@ -198,6 +223,26 @@ export function App() {
 					<label class="field field-color">
 						<div class="label">Color</div>
 						<input type="color" value={color.value} onInput={e => color.value = e.target.value} />
+					</label>
+					<label class="field field-letter-spacing">
+						<div class="label">Letter Spacing</div>
+						<input
+							type="number"
+							value={letterSpacing.value}
+							min="-20"
+							max="100"
+							onInput={useCallback(debounce(e => letterSpacing.value = parseFloat(e.target.value || '0'), 60), [])}
+						/>
+					</label>
+					<div class="field field-outline">
+						<div class="label">Outline</div>
+						<input type="checkbox" checked={outline.value} onInput={e => outline.value = e.target.checked} />
+						<input type="color" value={outlineColor.value} onInput={e => outlineColor.value = e.target.value} />
+						<input type="number" value={outlineWidth.value} min="1" max="128" onInput={e => outlineWidth.value = e.target.value? parseFloat(e.target.value) : 0} />
+					</div>
+					<label class="field field-outline">
+						<div class="label">Miter Limit</div>
+						<input type="checkbox" checked={outlineMiter.value} onInput={e => outlineMiter.value = e.target.checked} />
 					</label>
 				</fieldset>
 				<fieldset>
